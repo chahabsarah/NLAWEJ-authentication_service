@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = "nlawej-authentication"
         DOCKER_TAG = "latest"
         REGISTRY = "docker.io/sarra1998"
-        CREDENTIALS_ID = 'dockerhub-creds'
+        CREDENTIALS_ID = '96883c9d-0a13-43d1-b2e3-11cbcac322c2'
     }
 
     stages {
