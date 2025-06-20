@@ -38,7 +38,13 @@ pipeline {
         }
 
         stage('Push to Registry') {
-           
+          when {
+                anyOf {
+                    expression { env.BRANCH_NAME == 'main' }
+                    expression { env.BRANCH_NAME == 'master' }
+                    expression { env.BRANCH_NAME == null || env.BRANCH_NAME == '' } // pour les builds manuels
+                }
+            }
             steps {
                 withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh '''
