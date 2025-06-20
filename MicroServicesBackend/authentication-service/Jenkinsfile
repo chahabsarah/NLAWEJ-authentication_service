@@ -9,6 +9,12 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
@@ -27,11 +33,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh """
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} MicroServicesBackend/authentication-service
-                    """
-                }
+                sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG MicroServicesBackend/authentication-service'
             }
         }
 
@@ -41,11 +43,11 @@ pipeline {
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh """
+                    sh '''
                         echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                        docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                        docker push ${REGISTRY}/${DOCKER_IMAGE}:${DOCKER_TAG}
-                    """
+                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                        docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                    '''
                 }
             }
         }
