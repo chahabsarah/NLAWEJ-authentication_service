@@ -37,20 +37,18 @@ pipeline {
             }
         }
 
-        stage('Push to Registry') {
-            when {
-                expression { return env.BRANCH_NAME == 'main' || env.BRANCH_NAME == 'master' }
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '''
-                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                        docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
-                }
-            }
+       stage('Push to Registry') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+            sh '''
+                echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+            '''
         }
+    }
+}
+
     }
 
     post {
