@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = "nlawej-authentication"
         DOCKER_TAG = "latest"
         REGISTRY = "docker.io/sarra1998"
-        CREDENTIALS_ID = '96883c9d-0a13-43d1-b2e3-11cbcac322c2'
+        CREDENTIALS_ID = 'dockerhub-creds'
     }
 
     stages {
@@ -46,13 +46,14 @@ pipeline {
                 }
             }
             steps {
-                withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    sh '''
-                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                        docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                    '''
+                    withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            echo "$PASSWORD" | docker login -u "sarra1998" --password-stdin
+                            docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                            docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                        '''
                 }
+
             }
         }
     }
