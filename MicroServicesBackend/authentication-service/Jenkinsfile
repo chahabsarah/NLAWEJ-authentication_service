@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18-alpine' // Utilise une image Docker avec Node.js préinstallé
-            args '-u root:root'    // Optionnel si tu as des soucis de droits
-        }
-    }
+    agent any
 
     environment {
         DOCKER_IMAGE = "nlawej-authentication"
@@ -14,12 +9,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
@@ -39,7 +28,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "MicroServicesBackend/authentication-service")
+                    sh """
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} MicroServicesBackend/authentication-service
+                    """
                 }
             }
         }
