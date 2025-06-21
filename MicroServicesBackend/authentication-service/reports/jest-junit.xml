@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="21" failures="0" errors="0" time="3.203">
+  <testsuite name="checkAdminRole middleware" errors="0" failures="0" skipped="0" timestamp="2025-06-21T17:03:46" time="0.873" tests="3">
+    <testcase classname="checkAdminRole middleware should return 404 if req.user is missing" name="checkAdminRole middleware should return 404 if req.user is missing" time="0.019">
+    </testcase>
+    <testcase classname="checkAdminRole middleware should return 403 if user is not admin" name="checkAdminRole middleware should return 403 if user is not admin" time="0.002">
+    </testcase>
+    <testcase classname="checkAdminRole middleware should call next() if user is admin" name="checkAdminRole middleware should call next() if user is admin" time="0.001">
+    </testcase>
+  </testsuite>
+
+</testsuites>
