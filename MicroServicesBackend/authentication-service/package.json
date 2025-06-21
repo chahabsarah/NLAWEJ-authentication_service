@@ -4,7 +4,7 @@
   "description": "",
   "main": "App.js",
   "scripts": {
-   "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "nodemon App.js",
     "start": "node App.js",
     "build": "echo 'Nothing to build'"
@@ -45,7 +45,25 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "mockingoose": "^2.16.2",
+    "node-mocks-http": "^1.17.2",
     "nodemon": "^3.1.9",
-    "supertest": "^7.1.0"
+    "supertest": "^7.1.1"
+  },
+
+  "jest": {
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "MicroServicesBackend/authentication-service",
+          "outputName": "jest-junit.xml"
+        }
+      ]
+    ]
   }
 }
+
+

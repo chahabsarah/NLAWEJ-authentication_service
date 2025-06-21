@@ -18,15 +18,15 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
-                    sh 'npm install'
+                    sh 'npm ci' // plus rapide et plus propre que `npm install`
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Unit Tests') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
-                    sh 'npm test || true'
+                    sh 'npx jest --ci --reporters=default --reporters=jest-junit'
                 }
             }
         }
@@ -38,22 +38,21 @@ pipeline {
         }
 
         stage('Push to Registry') {
-          when {
+            when {
                 anyOf {
                     expression { env.BRANCH_NAME == 'main' }
                     expression { env.BRANCH_NAME == 'master' }
-                    expression { env.BRANCH_NAME == null || env.BRANCH_NAME == '' } // pour les builds manuels
+                    expression { env.BRANCH_NAME == null || env.BRANCH_NAME == '' }
                 }
             }
             steps {
-                    withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                        sh '''
-                            echo "$PASSWORD" | docker login -u "sarra1998" --password-stdin
-                            docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                            docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
-                        '''
+                withCredentials([usernamePassword(credentialsId: "${CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''
+                        echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
+                        docker tag $DOCKER_IMAGE:$DOCKER_TAG $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                        docker push $REGISTRY/$DOCKER_IMAGE:$DOCKER_TAG
+                    '''
                 }
-
             }
         }
     }
@@ -61,6 +60,16 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished'
+        }
+        success {
+            echo 'Tests passed'
+        }
+        failure {
+            echo 'Tests failed'
+        }
+
+        always {
+            junit 'MicroServicesBackend/authentication-service/jest-junit.xml'
         }
     }
 }
