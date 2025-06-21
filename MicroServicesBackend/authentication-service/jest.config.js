@@ -3,7 +3,7 @@ module.exports = {
   reporters: [
     'default',
     ['jest-junit', {
-      outputDirectory: 'MicroServicesBackend/authentication-service',
+      outputDirectory: '/',
       outputName: 'jest-junit.xml'
     }]
   ]
