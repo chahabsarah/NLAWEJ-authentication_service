@@ -31,12 +31,12 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube Analysis') {
+        stage('SonarQube') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
                     withSonarQubeEnv('SonarQubeServer') {
                         sh """
-                            -Dsonar.login=$SONAR_TOKEN
+                           npm sonar:sonar -Dsonar.login=$SONAR_TOKEN
                         """
                     }
                 }
