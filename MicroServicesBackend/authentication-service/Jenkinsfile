@@ -33,9 +33,21 @@ pipeline {
         }
         stage('SonarQube') {
             steps {
-                sh """
-                npm run sonar:sonar -- -Dsonar.login=$SONAR_TOKEN -Dsonar.tests=src/tests/RoleMiddleware.test.js -Dsonar.test.inclusions=src/tests/RoleMiddleware.test.js
-                """
+                dir('MicroServicesBackend/authentication-service') {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh """
+                            npx sonar-scanner \
+                            -Dsonar.projectKey=nlawej-authentication \
+                            -Dsonar.sources=. \
+                            -Dsonar.tests=src/tests \
+                            -Dsonar.inclusions=**/*.js \
+                            -Dsonar.exclusions=**/node_modules/**,**/*.test.js \
+                            -Dsonar.test.inclusions=src/tests/**/*.test.js \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.login=$SONAR_TOKEN
+                        """
+                    }
+                }
             }
         }
 
