@@ -601,7 +601,13 @@ services:
       - DOCKER_HOST=unix:///var/run/docker.sock
     networks:
       - nlawej-network
-
+  sonarqube:
+    image: sonarqube
+    ports:
+      - "9000:9000"
+    container_name: 
+    networks:
+    - nlawej-network
 volumes:
   mongodb_data:
     driver: local
