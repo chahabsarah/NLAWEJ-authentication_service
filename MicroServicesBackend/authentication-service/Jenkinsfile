@@ -10,7 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
+        stage('Git') {
             steps {
                 checkout scm
             }
@@ -24,7 +24,7 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
+        stage('Jest Unit Tests') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
                    sh 'npx jest --ci --coverage --reporters=default --reporters=jest-junit'
@@ -43,7 +43,6 @@ pipeline {
                             -Dsonar.inclusions=**/*.js \
                             -Dsonar.exclusions=**/node_modules/**,**/*.test.js \
                             -Dsonar.test.inclusions=src/tests/**/*.test.js \
-                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
                             -Dsonar.login=$SONAR_TOKEN
                         """
                     }
