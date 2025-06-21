@@ -18,7 +18,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
-                    sh 'npm ci' // plus rapide et plus propre que `npm install`
+                    sh 'npm ci'
                 }
             }
         }
@@ -60,16 +60,13 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished'
+            junit 'MicroServicesBackend/authentication-service/jest-junit.xml'
         }
         success {
             echo 'Tests passed'
         }
         failure {
             echo 'Tests failed'
-        }
-
-        always {
-            junit 'MicroServicesBackend/authentication-service/jest-junit.xml'
         }
     }
 }
