@@ -3,7 +3,7 @@ const Joi = require('joi');
 const schema = Joi.object({
   fullName: Joi.string()
     .pattern(/^[A-Za-z\s]+$/)
-    .pattern(/^[^\d!@#$%^&*(),.?":{}|<>\/]+(\s[^\d!@#$%^&*(),.?":{}|<>\/]+)*$/)
+    .pattern(/^[A-Za-zÀ-ÿ\s'-]{3,}$/)
     .min(3)
     .required()
     .messages({
