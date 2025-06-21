@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.311">
-  <testsuite name="AuthController tests" errors="0" failures="0" skipped="0" timestamp="2025-06-21T01:39:14" time="2.208" tests="3">
-    <testcase classname="AuthController tests registerClients should return 400 if email is missing" name="AuthController tests registerClients should return 400 if email is missing" time="0.005">
+<testsuites name="jest tests" tests="6" failures="0" errors="0" time="3.279">
+  <testsuite name="checkAdminRole middleware" errors="0" failures="0" skipped="0" timestamp="2025-06-21T14:38:48" time="1.086" tests="3">
+    <testcase classname="checkAdminRole middleware should return 404 if req.user is missing" name="checkAdminRole middleware should return 404 if req.user is missing" time="0.011">
     </testcase>
-    <testcase classname="AuthController tests login should return 400 if password is wrong" name="AuthController tests login should return 400 if password is wrong" time="0.086">
+    <testcase classname="checkAdminRole middleware should return 403 if user is not admin" name="checkAdminRole middleware should return 403 if user is not admin" time="0.001">
+    </testcase>
+    <testcase classname="checkAdminRole middleware should call next() if user is admin" name="checkAdminRole middleware should call next() if user is admin" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="AuthController tests" errors="0" failures="0" skipped="0" timestamp="2025-06-21T14:38:48" time="2.807" tests="3">
+    <testcase classname="AuthController tests registerClients should return 400 if email is missing" name="AuthController tests registerClients should return 400 if email is missing" time="0.014">
+    </testcase>
+    <testcase classname="AuthController tests login should return 400 if password is wrong" name="AuthController tests login should return 400 if password is wrong" time="0.133">
     </testcase>
     <testcase classname="UserController tests getAllClients should return habitants and artisans" name="UserController tests getAllClients should return habitants and artisans" time="0.001">
     </testcase>
