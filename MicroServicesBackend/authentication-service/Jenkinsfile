@@ -6,6 +6,7 @@ pipeline {
         DOCKER_TAG = "latest"
         REGISTRY = "docker.io/sarra1998"
         CREDENTIALS_ID = 'dockerhub-creds'
+        SONAR_TOKEN = credentials('sonar-token-id')
     }
 
     stages {
@@ -26,10 +27,30 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 dir('MicroServicesBackend/authentication-service') {
-                    sh 'npx jest --ci --reporters=default --reporters=jest-junit'
+                   sh 'npx jest --ci --coverage --reporters=default --reporters=jest-junit'
                 }
             }
         }
+        stage('SonarQube Analysis') {
+            steps {
+                dir('MicroServicesBackend/authentication-service') {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        sh """
+                            npx sonar-scanner \
+                            -Dsonar.projectKey=nlawej-authentication \
+                            -Dsonar.sources=. \
+                            -Dsonar.tests=src/tests \
+                            -Dsonar.inclusions=**/*.js \
+                            -Dsonar.exclusions=**/node_modules/**,**/*.test.js \
+                            -Dsonar.test.inclusions=src/tests/**/*.test.js \
+                            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                            -Dsonar.login=$SONAR_TOKEN
+                        """
+                    }
+                }
+            }
+        }
+
 
         stage('Build Docker Image') {
             steps {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="3" failures="0" errors="0" time="1.812">
-  <testsuite name="AuthController tests" errors="0" failures="0" skipped="0" timestamp="2025-06-21T00:56:51" time="1.716" tests="3">
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="2.311">
+  <testsuite name="AuthController tests" errors="0" failures="0" skipped="0" timestamp="2025-06-21T01:39:14" time="2.208" tests="3">
     <testcase classname="AuthController tests registerClients should return 400 if email is missing" name="AuthController tests registerClients should return 400 if email is missing" time="0.005">
     </testcase>
     <testcase classname="AuthController tests login should return 400 if password is wrong" name="AuthController tests login should return 400 if password is wrong" time="0.086">
