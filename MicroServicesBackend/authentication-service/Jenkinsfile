@@ -31,13 +31,13 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube') {
-            steps {
-                        sh """
-                           npm sonar:sonar -Dsonar.login=$SONAR_TOKEN
-                        """
-            }
-        }
+stage('SonarQube') {
+    steps {
+        sh """
+           npm run sonar:sonar -- -Dsonar.login=$SONAR_TOKEN -Dsonar.tests=src/tests/RoleMiddleware.test.js -Dsonar.test.inclusions=src/tests/RoleMiddleware.test.js
+        """
+    }
+}
 
 
         stage('Build Docker Image') {
