@@ -605,7 +605,7 @@ services:
     image: sonarqube
     ports:
       - "9000:9000"
-    container_name: 
+    container_name: sonarqube
     networks:
     - nlawej-network
 volumes:
