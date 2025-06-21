@@ -33,13 +33,9 @@ pipeline {
         }
         stage('SonarQube') {
             steps {
-                dir('MicroServicesBackend/authentication-service') {
-                    withSonarQubeEnv('SonarQubeServer') {
                         sh """
                            npm sonar:sonar -Dsonar.login=$SONAR_TOKEN
                         """
-                    }
-                }
             }
         }
 
