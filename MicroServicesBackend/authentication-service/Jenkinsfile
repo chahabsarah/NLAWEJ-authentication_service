@@ -61,8 +61,8 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished'
-            sh 'ls -l MicroServicesBackend/authentication-service'
-            junit 'MicroServicesBackend/authentication-service/jest-junit.xml'
+            sh 'ls -l MicroServicesBackend/authentication-service/reports'
+            junit 'MicroServicesBackend/authentication-service/reports/jest-junit.xml'
         }
         success {
             echo 'Tests passed'
