@@ -96,3 +96,177 @@ describe('UserController tests', () => {
     });
   });
 });
+const {
+  addUser,
+  signUpAdmin,
+  verifyEmail,
+  logout,
+  resetPassword,
+  resetForgetPassword
+} = require('../controllers/AuthController');
+
+jest.mock('../utils/RandomPassword', () => jest.fn(() => 'Random@1234'));
+jest.mock('../services/EmailService', () => ({
+  sendVerificationCode: jest.fn(),
+  updatePasswordAlert: jest.fn(),
+  forgotPasswordReset: jest.fn()
+}));
+
+
+describe('Additional AuthController Tests', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('addUser', () => {
+    it('should return 400 if required fields are missing', async () => {
+      const req = httpMocks.createRequest({ method: 'POST', body: {} });
+      const res = httpMocks.createResponse();
+
+      await addUser(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should return 400 if phone or email already exists', async () => {
+      User.findOne.mockResolvedValueOnce(true); // phone exists
+      const req = httpMocks.createRequest({ method: 'POST', body: {
+        fullName: 'Test',
+        email: 'test@mail.com',
+        phone: '12345678',
+        address: 'test',
+        role: 'habitant',
+        cin: '00000000'
+      }});
+      const res = httpMocks.createResponse();
+
+      await addUser(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+  });
+
+  describe('signUpAdmin', () => {
+    it('should return 400 if required fields are missing', async () => {
+      const req = httpMocks.createRequest({ method: 'POST', body: {} });
+      const res = httpMocks.createResponse();
+      await signUpAdmin(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should return 400 if passwords do not match', async () => {
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        body: {
+          fullName: 'Admin',
+          email: 'admin@mail.com',
+          phone: '12345678',
+          password: 'abc123',
+          retypePassword: 'xyz789',
+          address: 'admin',
+          cin: '11111111'
+        }
+      });
+      const res = httpMocks.createResponse();
+      await signUpAdmin(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+  });
+
+  describe('verifyEmail', () => {
+    it('should return 400 if user does not exist or code is wrong', async () => {
+      User.findOne.mockResolvedValue(null);
+      const req = httpMocks.createRequest({ body: { email: 'mail@mail.com', code: '123456' }});
+      const res = httpMocks.createResponse();
+
+      await verifyEmail(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should verify user if correct code', async () => {
+      const mockUser = {
+        verificationCode: '123456',
+        isVerified: false,
+        save: jest.fn()
+      };
+      User.findOne.mockResolvedValue(mockUser);
+      const req = httpMocks.createRequest({ body: { email: 'mail@mail.com', code: '123456' }});
+      const res = httpMocks.createResponse();
+
+      await verifyEmail(req, res);
+      expect(res.statusCode).toBe(200);
+    });
+  });
+
+  describe('logout', () => {
+    it('should return 400 if userId is not provided', async () => {
+      const req = httpMocks.createRequest({ body: {} });
+      const res = httpMocks.createResponse();
+      await logout(req, res);
+      expect(res.statusCode).toBe(400);
+    });
+
+    it('should logout successfully', async () => {
+      const mockUser = {
+        refreshToken: 'xx',
+        refreshTokenExpiration: new Date(),
+        save: jest.fn()
+      };
+      User.findById.mockResolvedValue(mockUser);
+      const req = httpMocks.createRequest({ body: { userId: 'user123' }});
+      const res = httpMocks.createResponse();
+
+      await logout(req, res);
+      expect(res.statusCode).toBe(200);
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('should reset password if valid', async () => {
+      const mockUser = {
+        email: 'user@mail.com',
+        resetPassword: jest.fn(),
+        save: jest.fn()
+      };
+      req = httpMocks.createRequest({
+        user: { id: 'userId' },
+        body: {
+          currentPassword: 'oldPass',
+          newPassword: 'newPass'
+        }
+      });
+      res = httpMocks.createResponse();
+      User.findById.mockResolvedValue(mockUser);
+
+      await resetPassword(req, res);
+      expect(res.statusCode).toBe(200);
+    });
+
+    it('should return 404 if user not found', async () => {
+      User.findById.mockResolvedValue(null);
+      const req = httpMocks.createRequest({ user: { id: 'userId' }, body: {} });
+      const res = httpMocks.createResponse();
+      await resetPassword(req, res);
+      expect(res.statusCode).toBe(404);
+    });
+  });
+
+  describe('resetForgetPassword', () => {
+    it('should return 404 if email not found', async () => {
+      User.findOne.mockResolvedValue(null);
+      const req = httpMocks.createRequest({ body: { email: 'nonexistent@mail.com' } });
+      const res = httpMocks.createResponse();
+      await resetForgetPassword(req, res);
+      expect(res.statusCode).toBe(404);
+    });
+
+    it('should reset forgotten password', async () => {
+      const mockUser = {
+        save: jest.fn()
+      };
+      User.findOne.mockResolvedValue(mockUser);
+      const req = httpMocks.createRequest({ body: { email: 'user@mail.com' } });
+      const res = httpMocks.createResponse();
+      await resetForgetPassword(req, res);
+      expect(res.statusCode).toBe(200);
+    });
+  });
+});
