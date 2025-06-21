@@ -5,7 +5,7 @@ const inputValidatorExpress = [
     .notEmpty().withMessage('Fullname is required')
     .isLength({ min: 3 }).withMessage('Fullname must be at least 3 characters long')
     .matches(/^[A-Za-z\s]+$/).withMessage('Fullname must contain only letters and spaces')
-    .matches(/^[^\d!@#$%^&*(),.?":{}|<>\/]+(\s[^\d!@#$%^&*(),.?":{}|<>\/]+)*$/)
+    .matches(/^[A-Za-zÀ-ÿ\s'-]{3,}$/)
     .withMessage('Fullname cannot contain special characters or digits'),
 
   body('email')
